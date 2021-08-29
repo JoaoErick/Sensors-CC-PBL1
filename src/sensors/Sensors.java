@@ -32,7 +32,7 @@ public class Sensors extends Application {
         stage.show();
         setStage(stage);
         
-        Image image = new Image("/image/frequency-respiratory-icon.png");
+        Image image = new Image("/image/sensors-icon.png");
 
         stage.getIcons().add(image);
     }

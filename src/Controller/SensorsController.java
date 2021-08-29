@@ -240,7 +240,7 @@ public class SensorsController implements Initializable {
         });
     }   
     
-    //Inicializa a conexão cliente com o servidor 1234, o IP 127.0.0.1 indica que o servidor está na mesma máquina que o cliente.
+    //Inicializa a conexão cliente com o servidor 60000, o IP 127.0.0.2 indica que o servidor está na mesma máquina que o cliente.
     private static void initClient(){
         try {
             client = new Socket("127.0.0.2", 60000);
