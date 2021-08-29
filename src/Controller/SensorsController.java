@@ -11,6 +11,7 @@ import java.io.PrintStream;
 import java.net.Socket;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.value.ChangeListener;
@@ -94,6 +95,10 @@ public class SensorsController implements Initializable {
     private int valueBP = 112;
     
     private static Socket client;
+    
+    private static int flag = 0;
+    
+    private static String patientID = UUID.randomUUID().toString().substring(9, 13);
     
     private static String response;
     
@@ -254,7 +259,13 @@ public class SensorsController implements Initializable {
     private static boolean sendMessage(String respiratoryFrequency, String temperature, String bloodOxygen, String heartRate, String bloodPressure) throws ClassNotFoundException{
         try {
             PrintStream data = new PrintStream(client.getOutputStream());
-            data.println("POST");
+            if(flag == 0){
+                data.println("POST");
+                flag++;
+            } else{
+                data.println("PUT");
+            }
+            data.println(patientID);
             data.println("Fulano");
             data.println(respiratoryFrequency);
             data.println(temperature);
