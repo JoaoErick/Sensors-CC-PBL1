@@ -26,10 +26,13 @@ import javafx.scene.input.MouseEvent;
 
 /**
  *
- * @author user03
+ * @author João Erick Barbosa
  */
 public class SensorsController implements Initializable {
     
+    /**
+     * Componentes do sensor de frequência respiratória.
+     */
     @FXML
     private Button btnSumRespiratoryFrequency;
 
@@ -39,8 +42,9 @@ public class SensorsController implements Initializable {
     @FXML
     private Button btnDecRespiratoryFrequency;
     
-    //------
-
+    /**
+     * Componentes do sensor de temperatura.
+     */
     @FXML
     private Button btnSumTemperature;
 
@@ -50,8 +54,9 @@ public class SensorsController implements Initializable {
     @FXML
     private Button btnDecTemperature;
     
-    //------
-
+    /**
+     * Componentes do sensor de oxigenação do sangue.
+     */
     @FXML
     private Button btnSumBloodOxygen;
 
@@ -61,8 +66,9 @@ public class SensorsController implements Initializable {
     @FXML
     private Button btnDecBloodOxygen;
     
-    //------
-
+    /**
+     * Componentes do sensor de frequência cardíaca.
+     */
     @FXML
     private Button btnSumHeartRate;
 
@@ -72,8 +78,9 @@ public class SensorsController implements Initializable {
     @FXML
     private Button btnDecHeartRate;
     
-    //------
-
+    /**
+     * Componentes do sensor de pressão arterial.
+     */
     @FXML
     private Button btnSumBloodPressure;
 
@@ -83,29 +90,45 @@ public class SensorsController implements Initializable {
     @FXML
     private Button btnDecBloodPressure;
     
-    //------
-
+    /**
+     * Botão que envia os dados dos sensores para o servidor.
+     */
     @FXML
     private Button btnSendData;
     
+    /**
+     * Valores de cada sensor inicializados com resultados arbitrários.
+     */
     private int valueRF = 11;
     private double valueT = 35.8;
     private double valueBO = 96.5;
     private int valueHR = 72;
     private int valueBP = 112;
     
+    /**
+     * Cliente socket que fará a conexão com o servidor ServerSocket.
+     */
     private static Socket client;
     
+    /**
+     * Permite que o método POST seja utilizado uma vez a cada instância dessa aplicação. 
+     * Após esse o uso, os próximos envios de dados serão feitos pelo método PUT.
+     */
     private static int flag = 0;
     
+    /**
+     * Gera o ID do paciente em um conjunto de 4 caracteres aleatórios.
+     */
     private static String patientID = UUID.randomUUID().toString().substring(9, 13);
     
     private static String response;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        //Faz a conexão do cliente com o servidor.
         initClient();
         
+        //Ao pressionar o botão, a função que envia os dados ao servidor é acionada.
         btnSendData.setOnMouseClicked((MouseEvent e)->{
             
             try {
@@ -124,6 +147,7 @@ public class SensorsController implements Initializable {
             
         });
         
+        //Inicializando os campos de texto dos sensores com valores arbitrários.
         txtRespiratoryFrequency.setText(Integer.toString(valueRF));
         txtTemperature.setText(Double.toString(valueT));
         txtBloodOxygen.setText(Double.toString(valueBO));
@@ -182,8 +206,8 @@ public class SensorsController implements Initializable {
             }
         });
         
-        //--------------
-        
+        //A cada alteração no campo de texto do respectivo sensor, é
+        //verificado se o valor coloca não ultrapassa o limite possível.
         txtRespiratoryFrequency.setOnKeyReleased((KeyEvent e)->{
             verifyTextLegth(txtRespiratoryFrequency, 2);
         });
@@ -200,8 +224,8 @@ public class SensorsController implements Initializable {
             verifyTextLegth(txtBloodPressure, 3);
         });
         
-        //--------------
         
+        //A cada clique no botão '+', o somador do respectivo sensor é acionado.
         btnSumRespiratoryFrequency.setOnMouseClicked((MouseEvent e)->{
             sum(txtRespiratoryFrequency, valueRF, 2);
         });
@@ -222,8 +246,7 @@ public class SensorsController implements Initializable {
             sumDouble(txtBloodPressure, valueBP, 3);
         });
         
-        //--------------
-        
+        //A cada clique no botão '-', o decrementador do respectivo sensor é acionado.
         btnDecRespiratoryFrequency.setOnMouseClicked((MouseEvent e)->{
             dec(txtRespiratoryFrequency, valueRF, 2);
         });
@@ -245,7 +268,9 @@ public class SensorsController implements Initializable {
         });
     }   
     
-    //Inicializa a conexão cliente com o servidor 60000, o IP 127.0.0.2 indica que o servidor está na mesma máquina que o cliente.
+    /**
+     * Método que inicializa um cliente socket fazendo a conexão com o servidor.
+     */
     private static void initClient(){
         try {
             client = new Socket("127.0.0.2", 60000);
@@ -255,7 +280,17 @@ public class SensorsController implements Initializable {
         }
     }
     
-    //Envia os dados ao servidor a partir do que for digitado.
+    /**
+     * Método que envia os dados do paciente para o servidor com o objetivo de armazená-los ou alterar algum valor.
+     * 
+     * @param respiratoryFrequency
+     * @param temperature
+     * @param bloodOxygen
+     * @param heartRate
+     * @param bloodPressure
+     * @return
+     * @throws ClassNotFoundException 
+     */
     private static boolean sendMessage(String respiratoryFrequency, String temperature, String bloodOxygen, String heartRate, String bloodPressure) throws ClassNotFoundException{
         try {
             PrintStream data = new PrintStream(client.getOutputStream());
@@ -286,6 +321,12 @@ public class SensorsController implements Initializable {
         return false;
     }
     
+    /**
+     * Método que corrige o valor do sensor caso este ultrapasse do limite.
+     * 
+     * @param txt TextField - Campo que texto que conterá o valor do sensor.
+     * @param limit int - Valor limite que o sensor pode atingir. 
+     */
     private void verifyTextLegth(TextField txt, int limit){
         if (txt.getText().length() > limit) {
             txt.setText(txt.getText().substring(0, limit));
@@ -293,6 +334,13 @@ public class SensorsController implements Initializable {
     
     }
     
+    /**
+     * Método que soma em 1 no valor do sensor cada vez que é invocado.
+     * 
+     * @param txt TextField - Campo que texto que conterá o valor do sensor.
+     * @param value int - Valor atual o sensor.
+     * @param limit int - Valor limite que o sensor pode atingir.
+     */
     private void sum(TextField txt, int value, int limit){
         if(txt.getText().isEmpty()){
             value += 1;
@@ -306,6 +354,13 @@ public class SensorsController implements Initializable {
         }
     }
     
+    /**
+     * Método que subtrai em 1 no valor do sensor cada vez que é invocado.
+     * 
+     * @param txt TextField - Campo que texto que conterá o valor do sensor.
+     * @param value int - Valor atual o sensor.
+     * @param limit int - Valor limite que o sensor pode atingir.
+     */
     private void dec(TextField txt, int value, int limit){
         if(txt.getText().isEmpty()){
             value -= 1;
@@ -319,6 +374,13 @@ public class SensorsController implements Initializable {
         }
     }
     
+    /**
+     * Método que soma em 0.1 no valor do sensor cada vez que é invocado.
+     * 
+     * @param txt TextField - Campo que texto que conterá o valor do sensor.
+     * @param value double - Valor atual o sensor.
+     * @param limit int - Valor limite que o sensor pode atingir.
+     */
     private void sumDouble(TextField txt, double value, int limit){
         if(txt.getText().isEmpty()){
             value += 0.10;
@@ -333,6 +395,13 @@ public class SensorsController implements Initializable {
         }
     }
     
+    /**
+     * Método que subtrai em 0.1 no valor do sensor cada vez que é invocado.
+     * 
+     * @param txt TextField - Campo que texto que conterá o valor do sensor.
+     * @param value double - Valor atual o sensor.
+     * @param limit int - Valor limite que o sensor pode atingir.
+     */
     private void decDouble(TextField txt, double value, int limit){
         if(txt.getText().isEmpty()){
             value -= 0.10;
