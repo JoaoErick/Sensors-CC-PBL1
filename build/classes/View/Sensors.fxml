@@ -9,35 +9,50 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="1050.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.SensorsController">
+<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="1050.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.SensorsController">
    <children>
-      <Label layoutX="441.0" layoutY="30.0" text="SENSORES">
+      <Label layoutX="353.0" layoutY="17.0" text="EMULADOR DE SENSORES">
          <font>
             <Font name="System Bold" size="24.0" />
          </font></Label>
-      <HBox layoutX="4.0" layoutY="149.0" prefHeight="45.0" prefWidth="992.0">
+      <Label layoutX="42.0" layoutY="71.0" text="NOME">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="lblUserName" layoutX="42.0" layoutY="96.0" prefHeight="25.0" prefWidth="314.0">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <TextField fx:id="txtUserName" layoutX="42.0" layoutY="98.0" prefHeight="25.0" prefWidth="314.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </TextField>
+      <HBox layoutX="4.0" layoutY="169.0" prefHeight="45.0" prefWidth="992.0">
          <children>
-            <Region prefHeight="45.0" prefWidth="44.0" />
+            <Region prefHeight="45.0" prefWidth="62.0" />
             <Label text="FREQUÊNCIA RESPIRATÓRIA">
                <font>
-                  <Font size="18.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
-            <Region prefHeight="45.0" prefWidth="168.0" />
+            <Region prefHeight="45.0" prefWidth="180.0" />
             <Label text="TEMPERATURA">
                <font>
-                  <Font size="18.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
-            <Region prefHeight="45.0" prefWidth="176.0" />
+            <Region prefHeight="45.0" prefWidth="195.0" />
             <Label text="OXIGENAÇÃO DO SANGUE">
                <font>
-                  <Font size="18.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
          </children>
       </HBox>
-      <HBox layoutX="4.0" layoutY="194.0" prefHeight="85.0" prefWidth="1044.0">
+      <HBox layoutX="4.0" layoutY="202.0" prefHeight="85.0" prefWidth="1044.0">
          <children>
             <Region prefHeight="85.0" prefWidth="36.0" />
             <Button fx:id="btnSumRespiratoryFrequency" mnemonicParsing="false" prefHeight="81.0" prefWidth="72.0" text="+">
@@ -107,7 +122,7 @@
             </Button>
          </children>
       </HBox>
-      <HBox layoutX="4.0" layoutY="278.0" prefHeight="27.0" prefWidth="992.0">
+      <HBox layoutX="4.0" layoutY="289.0" prefHeight="27.0" prefWidth="992.0">
          <children>
             <Region prefHeight="121.0" prefWidth="105.0" />
             <Label text="movimentos/min" />
@@ -117,24 +132,24 @@
             <Label text="\%" />
          </children>
       </HBox>
-      <HBox layoutX="5.0" layoutY="325.0" prefHeight="45.0" prefWidth="992.0">
+      <HBox layoutX="5.0" layoutY="344.0" prefHeight="45.0" prefWidth="992.0">
          <children>
-            <Region prefHeight="45.0" prefWidth="229.0" />
+            <Region prefHeight="45.0" prefWidth="238.0" />
             <Label text="FREQUÊNCIA CARDÍACA">
                <font>
-                  <Font size="18.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
-            <Region prefHeight="45.0" prefWidth="164.0" />
+            <Region prefHeight="45.0" prefWidth="193.0" />
             <Label text="PRESSÃO ARTERIAL">
                <font>
-                  <Font size="18.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
             <Region prefHeight="45.0" prefWidth="172.0" />
          </children>
       </HBox>
-      <HBox layoutX="5.0" layoutY="370.0" prefHeight="85.0" prefWidth="992.0">
+      <HBox layoutX="5.0" layoutY="379.0" prefHeight="85.0" prefWidth="992.0">
          <children>
             <Region prefHeight="85.0" prefWidth="189.0" />
             <Button fx:id="btnSumHeartRate" mnemonicParsing="false" prefHeight="81.0" prefWidth="79.0" text="+">
@@ -182,7 +197,7 @@
             </Button>
          </children>
       </HBox>
-      <HBox layoutX="5.0" layoutY="454.0" prefHeight="27.0" prefWidth="992.0">
+      <HBox layoutX="5.0" layoutY="463.0" prefHeight="27.0" prefWidth="992.0">
          <children>
             <Region prefHeight="27.0" prefWidth="296.0" />
             <Label prefHeight="17.0" prefWidth="108.0" text="batimentos/min" />
@@ -191,9 +206,9 @@
             <Region prefHeight="27.0" prefWidth="322.0" />
          </children>
       </HBox>
-      <Button fx:id="btnSendData" layoutX="406.0" layoutY="502.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="189.0" style="-fx-background-color: #000;" text="ENVIAR DADOS" textFill="WHITE">
+      <Button fx:id="btnSendData" layoutX="406.0" layoutY="517.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="189.0" style="-fx-background-color: #000;" text="ENVIAR DADOS" textFill="WHITE">
          <font>
-            <Font name="System Bold" size="12.0" />
+            <Font name="System Bold" size="16.0" />
          </font>
          <cursor>
             <Cursor fx:constant="HAND" />

@@ -19,7 +19,9 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -29,6 +31,14 @@ import javafx.scene.input.MouseEvent;
  * @author João Erick Barbosa
  */
 public class SensorsController implements Initializable {
+    /**
+     * Componentes do nome do paciente.
+     */
+    @FXML
+    private TextField txtUserName;
+    
+    @FXML
+    private Label lblUserName;
     
     /**
      * Componentes do sensor de frequência respiratória.
@@ -132,15 +142,20 @@ public class SensorsController implements Initializable {
         btnSendData.setOnMouseClicked((MouseEvent e)->{
             
             try {
-                if(sendMessage(txtRespiratoryFrequency.getText(), txtTemperature.getText(), txtBloodOxygen.getText(), txtHeartRate.getText(), txtBloodPressure.getText())){
-                    System.out.println("Mensagem enviada com sucesso!");
-                    if(!response.equals(" "))
-                        System.out.println("Resposta do servidor: " + response);
-
+                if(!txtUserName.getText().equals("")){
+                    if(sendMessage(txtUserName.getText(), txtRespiratoryFrequency.getText(), txtTemperature.getText(), txtBloodOxygen.getText(), txtHeartRate.getText(), txtBloodPressure.getText())){
+                        System.out.println("Mensagem enviada com sucesso!");
+                        txtUserName.setVisible(false);
+                        lblUserName.setText(txtUserName.getText());
+                    } else{
+                        System.out.println("Erro, falha ao enviar a mensagem!");
+                    }
                 } else{
-                    System.out.println("Erro, falha ao enviar a mensagem!");
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setTitle("Atenção");
+                    alert.setHeaderText("É necessário preencher o nome do paciente para prosseguir.");
+                    alert.show();
                 }
-
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(SensorsController.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -291,7 +306,7 @@ public class SensorsController implements Initializable {
      * @return
      * @throws ClassNotFoundException 
      */
-    private static boolean sendMessage(String respiratoryFrequency, String temperature, String bloodOxygen, String heartRate, String bloodPressure) throws ClassNotFoundException{
+    private static boolean sendMessage(String userName, String respiratoryFrequency, String temperature, String bloodOxygen, String heartRate, String bloodPressure) throws ClassNotFoundException{
         try {
             PrintStream data = new PrintStream(client.getOutputStream());
             if(flag == 0){
@@ -301,7 +316,7 @@ public class SensorsController implements Initializable {
                 data.println("PUT");
             }
             data.println(patientID);
-            data.println("Fulano");
+            data.println(userName);
             data.println(respiratoryFrequency);
             data.println(temperature);
             data.println(bloodOxygen);
