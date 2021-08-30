@@ -411,7 +411,7 @@ public class SensorsController implements Initializable {
             value = Double.parseDouble(txt.getText());
             value -= 0.10;
             txt.setText(Double.toString(value));
-                verifyTextLegth(txt, limit);
+            verifyTextLegth(txt, limit);
         }
     }
     
