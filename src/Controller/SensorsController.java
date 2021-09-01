@@ -27,7 +27,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
 /**
- *
+ * Classe controladora responsável por executar funções dispararadas por ações 
+ * realizadas na janela da aplicação do emulador de sensores.
+ * 
  * @author João Erick Barbosa
  */
 public class SensorsController implements Initializable {
@@ -131,6 +133,9 @@ public class SensorsController implements Initializable {
      */
     private static String patientID = UUID.randomUUID().toString().substring(9, 13);
     
+    /**
+     * Recebe a mensagem do servidor.
+     */
     private static String response;
     
     @Override
@@ -169,8 +174,7 @@ public class SensorsController implements Initializable {
         txtHeartRate.setText(Integer.toString(valueHR));
         txtBloodPressure.setText(Integer.toString(valueBP));
         
-        //--------------
-        
+        //Limitando os tipos de caracteres que podem ser digitados nos campos de texto.
         txtRespiratoryFrequency.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, 
@@ -303,7 +307,7 @@ public class SensorsController implements Initializable {
      * @param bloodOxygen
      * @param heartRate
      * @param bloodPressure
-     * @return
+     * @return boolean
      * @throws ClassNotFoundException 
      */
     private static boolean sendMessage(String userName, String respiratoryFrequency, String temperature, String bloodOxygen, String heartRate, String bloodPressure) throws ClassNotFoundException{
