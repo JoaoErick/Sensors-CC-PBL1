@@ -310,10 +310,10 @@ public class SensorsController implements Initializable {
         try {
             PrintStream data = new PrintStream(client.getOutputStream());
             if(flag == 0){
-                data.println("POST");
+                data.println("POST /create");
                 flag++;
             } else{
-                data.println("PUT");
+                data.println("PUT /update");
             }
             data.println(patientID);
             data.println(userName);
