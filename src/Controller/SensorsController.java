@@ -149,10 +149,22 @@ public class SensorsController implements Initializable {
             try {
                 if(!txtUserName.getText().equals("")){
                     if(sendMessage(txtUserName.getText(), txtRespiratoryFrequency.getText(), txtTemperature.getText(), txtBloodOxygen.getText(), txtHeartRate.getText(), txtBloodPressure.getText())){
-                        System.out.println("Mensagem enviada com sucesso!");
-                        txtUserName.setVisible(false);
-                        lblUserName.setText(txtUserName.getText());
+                        if(response.equals("200 OK")){
+                            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                            alert.setTitle("Sucesso");
+                            alert.setHeaderText("Os dados foram enviados com sucesso!");
+                            alert.show();
+
+                            System.out.println("Mensagem enviada com sucesso!");
+                            txtUserName.setVisible(false);
+                            lblUserName.setText(txtUserName.getText());
+                        }
                     } else{
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Erro");
+                        alert.setHeaderText("Falha ao enviar os dados ao servidor!");
+                        alert.show();
+                        
                         System.out.println("Erro, falha ao enviar a mensagem!");
                     }
                 } else{
@@ -327,11 +339,9 @@ public class SensorsController implements Initializable {
             data.println(heartRate);
             data.println(bloodPressure);
             
-            ObjectInputStream entrada = new ObjectInputStream(client.getInputStream());
-            String text = (String)entrada.readObject();
-            System.out.println("Resposta do servidor: " + text);
-            
-            response = text;
+            ObjectInputStream input = new ObjectInputStream(client.getInputStream());
+            response = (String)input.readObject();
+            System.out.println("Resposta do servidor: " + response);
             
             return true;
         } catch (IOException ex) {
