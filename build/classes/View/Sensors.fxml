@@ -20,6 +20,7 @@
             <Font size="16.0" />
          </font>
       </Label>
+      <Label fx:id="lblInfo" layoutX="72.0" layoutY="131.0" prefHeight="17.0" prefWidth="255.0" textAlignment="CENTER" textFill="#8a8686" />
       <Label fx:id="lblUserName" layoutX="42.0" layoutY="96.0" prefHeight="25.0" prefWidth="314.0">
          <font>
             <Font size="16.0" />
@@ -30,7 +31,7 @@
             <Font size="14.0" />
          </font>
       </TextField>
-      <HBox layoutX="4.0" layoutY="169.0" prefHeight="45.0" prefWidth="992.0">
+      <HBox layoutX="6.0" layoutY="233.0" prefHeight="45.0" prefWidth="992.0">
          <children>
             <Region prefHeight="45.0" prefWidth="62.0" />
             <Label text="FREQUÊNCIA RESPIRATÓRIA">
@@ -52,7 +53,7 @@
             </Label>
          </children>
       </HBox>
-      <HBox layoutX="4.0" layoutY="202.0" prefHeight="85.0" prefWidth="1044.0">
+      <HBox layoutX="3.0" layoutY="268.0" prefHeight="85.0" prefWidth="1044.0">
          <children>
             <Region prefHeight="85.0" prefWidth="36.0" />
             <Button fx:id="btnSumRespiratoryFrequency" mnemonicParsing="false" prefHeight="81.0" prefWidth="72.0" text="+">
@@ -122,7 +123,7 @@
             </Button>
          </children>
       </HBox>
-      <HBox layoutX="4.0" layoutY="289.0" prefHeight="27.0" prefWidth="992.0">
+      <HBox layoutX="6.0" layoutY="353.0" prefHeight="27.0" prefWidth="992.0">
          <children>
             <Region prefHeight="121.0" prefWidth="105.0" />
             <Label text="movimentos/min" />
@@ -132,15 +133,15 @@
             <Label text="\%" />
          </children>
       </HBox>
-      <HBox layoutX="5.0" layoutY="344.0" prefHeight="45.0" prefWidth="992.0">
+      <HBox layoutX="4.0" layoutY="401.0" prefHeight="45.0" prefWidth="992.0">
          <children>
-            <Region prefHeight="45.0" prefWidth="238.0" />
+            <Region prefHeight="45.0" prefWidth="256.0" />
             <Label text="FREQUÊNCIA CARDÍACA">
                <font>
                   <Font size="16.0" />
                </font>
             </Label>
-            <Region prefHeight="45.0" prefWidth="193.0" />
+            <Region prefHeight="45.0" prefWidth="202.0" />
             <Label text="PRESSÃO ARTERIAL">
                <font>
                   <Font size="16.0" />
@@ -149,7 +150,7 @@
             <Region prefHeight="45.0" prefWidth="172.0" />
          </children>
       </HBox>
-      <HBox layoutX="5.0" layoutY="379.0" prefHeight="85.0" prefWidth="992.0">
+      <HBox layoutX="6.0" layoutY="435.0" prefHeight="85.0" prefWidth="992.0">
          <children>
             <Region prefHeight="85.0" prefWidth="189.0" />
             <Button fx:id="btnSumHeartRate" mnemonicParsing="false" prefHeight="81.0" prefWidth="79.0" text="+">
@@ -160,7 +161,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <TextField fx:id="txtHeartRate" prefHeight="81.0" prefWidth="112.0">
+            <TextField fx:id="txtHeartRate" prefHeight="81.0" prefWidth="137.0">
                <font>
                   <Font name="System Bold" size="38.0" />
                </font>
@@ -182,7 +183,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <TextField fx:id="txtBloodPressure" prefHeight="81.0" prefWidth="112.0">
+            <TextField fx:id="txtBloodPressure" prefHeight="81.0" prefWidth="137.0">
                <font>
                   <Font name="System Bold" size="38.0" />
                </font>
@@ -197,7 +198,7 @@
             </Button>
          </children>
       </HBox>
-      <HBox layoutX="5.0" layoutY="463.0" prefHeight="27.0" prefWidth="992.0">
+      <HBox layoutX="6.0" layoutY="520.0" prefHeight="27.0" prefWidth="992.0">
          <children>
             <Region prefHeight="27.0" prefWidth="296.0" />
             <Label prefHeight="17.0" prefWidth="108.0" text="batimentos/min" />
@@ -206,13 +207,5 @@
             <Region prefHeight="27.0" prefWidth="322.0" />
          </children>
       </HBox>
-      <Button fx:id="btnSendData" layoutX="406.0" layoutY="517.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="189.0" style="-fx-background-color: #000;" text="ENVIAR DADOS" textFill="WHITE">
-         <font>
-            <Font name="System Bold" size="16.0" />
-         </font>
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor>
-      </Button>
    </children>
 </AnchorPane>

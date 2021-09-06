@@ -14,6 +14,7 @@ import java.util.ResourceBundle;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -23,6 +24,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
@@ -33,6 +35,11 @@ import javafx.scene.input.MouseEvent;
  * @author João Erick Barbosa
  */
 public class SensorsController implements Initializable {
+    /**
+     * Texto informativo na janela.
+     */
+    @FXML
+    private Label lblInfo;
     /**
      * Componentes do nome do paciente.
      */
@@ -103,12 +110,6 @@ public class SensorsController implements Initializable {
     private Button btnDecBloodPressure;
     
     /**
-     * Botão que envia os dados dos sensores para o servidor.
-     */
-    @FXML
-    private Button btnSendData;
-    
-    /**
      * Valores de cada sensor inicializados com resultados arbitrários.
      */
     private int valueRF = 11;
@@ -143,40 +144,66 @@ public class SensorsController implements Initializable {
         //Faz a conexão do cliente com o servidor.
         initClient();
         
-        //Ao pressionar o botão, a função que envia os dados ao servidor é acionada.
-        btnSendData.setOnMouseClicked((MouseEvent e)->{
-            
-            try {
-                if(!txtUserName.getText().equals("")){
-                    if(sendMessage(txtUserName.getText(), txtRespiratoryFrequency.getText(), txtTemperature.getText(), txtBloodOxygen.getText(), txtHeartRate.getText(), txtBloodPressure.getText())){
-                        if(response.equals("200 OK")){
-                            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                            alert.setTitle("Sucesso");
-                            alert.setHeaderText("Os dados foram enviados com sucesso!");
-                            alert.show();
+        lblInfo.setText("Escreva o nome do paciente e pressione ENTER");
+        
+        
+        /**
+         * Quando o nome do paciente for digita e o for pressionada a 
+         * tecla ENTER, uma thread é instanciada e ela passa a acionar 
+         * a função que envia os dados ao servidor a cada 5 segundos.
+         * 
+         */
+        txtUserName.setOnKeyPressed((KeyEvent e) -> {
+            if (e.getCode() == KeyCode.ENTER) {
+                txtUserName.setVisible(false);
+                lblUserName.setText(txtUserName.getText());
+                lblInfo.setText("");
+                /**
+                 * Uma nova thread é inicializada concorrentemente ao sistema
+                 * para fazer requisições ao servidor.
+                 *
+                 */
+                Thread thread = new Thread(new Runnable() {
 
-                            System.out.println("Mensagem enviada com sucesso!");
-                            txtUserName.setVisible(false);
-                            lblUserName.setText(txtUserName.getText());
+                    @Override
+                    public void run() {
+                        Runnable updater = new Runnable() {
+
+                            @Override
+                            public void run() {
+                                try {
+                                    if (!txtUserName.getText().equals("")) {
+                                        if (sendMessage(txtUserName.getText(), txtRespiratoryFrequency.getText(), txtTemperature.getText(), txtBloodOxygen.getText(), txtHeartRate.getText(), txtBloodPressure.getText())) {
+                                            if (response.equals("200 OK")) {
+                                                System.out.println("Mensagem enviada com sucesso!");
+                                            }
+                                        } else {
+                                            System.out.println("Erro, falha ao enviar a mensagem!");
+                                        }
+                                    }
+                                } catch (ClassNotFoundException ex) {
+                                    Logger.getLogger(SensorsController.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                        };
+
+                        while (true) {
+                            try {
+                                Thread.sleep(5000);
+                            } catch (InterruptedException ex) {
+                            }
+
+                            // A atualização é feita na thread da aplicação.
+                            Platform.runLater(updater);
                         }
-                    } else{
-                        Alert alert = new Alert(Alert.AlertType.ERROR);
-                        alert.setTitle("Erro");
-                        alert.setHeaderText("Falha ao enviar os dados ao servidor!");
-                        alert.show();
-                        
-                        System.out.println("Erro, falha ao enviar a mensagem!");
                     }
-                } else{
-                    Alert alert = new Alert(Alert.AlertType.WARNING);
-                    alert.setTitle("Atenção");
-                    alert.setHeaderText("É necessário preencher o nome do paciente para prosseguir.");
-                    alert.show();
-                }
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(SensorsController.class.getName()).log(Level.SEVERE, null, ex);
+
+                });
+                // Impede a thread de finalizar a JVM
+                thread.setDaemon(true);
+                thread.start();
+                
             }
-            
         });
         
         //Inicializando os campos de texto dos sensores com valores arbitrários.
