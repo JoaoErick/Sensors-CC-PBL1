@@ -146,7 +146,6 @@ public class SensorsController implements Initializable {
         
         lblInfo.setText("Escreva o nome do paciente e pressione ENTER");
         
-        
         /**
          * Quando o nome do paciente for digita e o for pressionada a 
          * tecla ENTER, uma thread é instanciada e ela passa a acionar 
@@ -171,18 +170,22 @@ public class SensorsController implements Initializable {
 
                             @Override
                             public void run() {
-                                try {
-                                    if (!txtUserName.getText().equals("")) {
-                                        if (sendMessage(txtUserName.getText(), txtRespiratoryFrequency.getText(), txtTemperature.getText(), txtBloodOxygen.getText(), txtHeartRate.getText(), txtBloodPressure.getText())) {
-                                            if (response.equals("200 OK")) {
-                                                System.out.println("Mensagem enviada com sucesso!");
+                                if(client != null){
+                                    try {
+                                        if (!txtUserName.getText().equals("")) {
+                                            if (sendMessage(txtUserName.getText(), txtRespiratoryFrequency.getText(), txtTemperature.getText(), txtBloodOxygen.getText(), txtHeartRate.getText(), txtBloodPressure.getText())) {
+                                                if (response.equals("200 OK")) {
+                                                    System.out.println("Mensagem enviada com sucesso!");
+                                                }
+                                            } else {
+                                                System.out.println("Erro, falha ao enviar a mensagem!");
                                             }
-                                        } else {
-                                            System.out.println("Erro, falha ao enviar a mensagem!");
                                         }
+                                    } catch (ClassNotFoundException ex) {
+                                        Logger.getLogger(SensorsController.class.getName()).log(Level.SEVERE, null, ex);
                                     }
-                                } catch (ClassNotFoundException ex) {
-                                    Logger.getLogger(SensorsController.class.getName()).log(Level.SEVERE, null, ex);
+                                }  else{
+                                    initClient();
                                 }
                             }
                         };
@@ -335,6 +338,10 @@ public class SensorsController implements Initializable {
             System.out.println("Conexão estabelecida!");
         } catch (IOException ex) {
             System.out.println("Erro, a conexão com o servidor não foi estabelecida!");
+            try {
+                client.close();
+            }
+            catch(Exception ec) {}
         }
     }
     
