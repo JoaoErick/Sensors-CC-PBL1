@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="Emulador de Sensores.jnlp">
+  <information>
+    <title>Emulador de Sensores</title>
+    <vendor>João Erick Barbosa</vendor>
+    <description>null</description>
+    <offline-allowed/>
+  </information>
+  <resources>
+    <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+    <jar href="sensors.jar" size="44363" download="eager" />
+  </resources>
+  <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="Emulador de Sensores" >
+    <param name="requiredFXVersion" value="8.0+"/>
+  </applet-desc>
+  <jfx:javafx-desc  width="800" height="600" main-class="sensors.Sensors"  name="Emulador de Sensores" />
+  <update check="always"/>
+</jnlp>
