@@ -35,19 +35,12 @@ import javafx.scene.input.MouseEvent;
  * @author João Erick Barbosa
  */
 public class SensorsController implements Initializable {
-    /**
-     * Texto informativo na janela.
-     */
-    @FXML
-    private Label lblInfo;
+    
     /**
      * Componentes do nome do paciente.
      */
     @FXML
     private TextField txtUserName;
-    
-    @FXML
-    private Label lblUserName;
     
     /**
      * Componentes do sensor de frequência respiratória.
@@ -144,70 +137,53 @@ public class SensorsController implements Initializable {
         //Faz a conexão do cliente com o servidor.
         initClient();
         
-        lblInfo.setText("Escreva o nome do paciente e pressione ENTER");
-        
         /**
-         * Quando o nome do paciente for digita e o for pressionada a 
-         * tecla ENTER, uma thread é instanciada e ela passa a acionar 
-         * a função que envia os dados ao servidor a cada 5 segundos.
-         * 
+         * Uma nova thread é inicializada concorrentemente ao sistema
+         * para fazer requisições ao servidor a cada 5 segundos.
+         *
          */
-        txtUserName.setOnKeyPressed((KeyEvent e) -> {
-            if (e.getCode() == KeyCode.ENTER) {
-                txtUserName.setVisible(false);
-                lblUserName.setText(txtUserName.getText());
-                lblInfo.setText("");
-                /**
-                 * Uma nova thread é inicializada concorrentemente ao sistema
-                 * para fazer requisições ao servidor.
-                 *
-                 */
-                Thread thread = new Thread(new Runnable() {
+        Thread thread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                Runnable updater = new Runnable() {
 
                     @Override
                     public void run() {
-                        Runnable updater = new Runnable() {
-
-                            @Override
-                            public void run() {
-                                if(client != null){
-                                    try {
-                                        if (!txtUserName.getText().equals("")) {
-                                            if (sendMessage(txtUserName.getText(), txtRespiratoryFrequency.getText(), txtTemperature.getText(), txtBloodOxygen.getText(), txtHeartRate.getText(), txtBloodPressure.getText())) {
-                                                if (response.equals("200 OK")) {
-                                                    System.out.println("Mensagem enviada com sucesso!");
-                                                }
-                                            } else {
-                                                System.out.println("Erro, falha ao enviar a mensagem!");
-                                            }
-                                        }
-                                    } catch (ClassNotFoundException ex) {
-                                        Logger.getLogger(SensorsController.class.getName()).log(Level.SEVERE, null, ex);
-                                    }
-                                }  else{
-                                    initClient();
-                                }
-                            }
-                        };
-
-                        while (true) {
+                        if(client != null){
                             try {
-                                Thread.sleep(5000);
-                            } catch (InterruptedException ex) {
+                                if (sendMessage(txtUserName.getText(), txtRespiratoryFrequency.getText(), txtTemperature.getText(), txtBloodOxygen.getText(), txtHeartRate.getText(), txtBloodPressure.getText())) {
+                                    if (response.equals("200 OK")) {
+                                        System.out.println("Mensagem enviada com sucesso!");
+                                    }
+                                } else {
+                                    System.out.println("Erro, falha ao enviar a mensagem!");
+                                }
+                            } catch (ClassNotFoundException ex) {
+                                Logger.getLogger(SensorsController.class.getName()).log(Level.SEVERE, null, ex);
                             }
-
-                            // A atualização é feita na thread da aplicação.
-                            Platform.runLater(updater);
+                        }  else{
+                            initClient();
                         }
                     }
+                };
 
-                });
-                // Impede a thread de finalizar a JVM
-                thread.setDaemon(true);
-                thread.start();
-                
+                while (true) {
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException ex) {
+                    }
+
+                    // A atualização é feita na thread da aplicação.
+                    Platform.runLater(updater);
+                }
             }
+
         });
+        // Impede a thread de finalizar a JVM
+        thread.setDaemon(true);
+        thread.start();
+                
         
         //Inicializando os campos de texto dos sensores com valores arbitrários.
         txtRespiratoryFrequency.setText(Integer.toString(valueRF));
@@ -300,11 +276,11 @@ public class SensorsController implements Initializable {
         });
         
         btnSumHeartRate.setOnMouseClicked((MouseEvent e)->{
-            sumDouble(txtHeartRate, valueHR, 3);
+            sum(txtHeartRate, valueHR, 3);
         });
         
         btnSumBloodPressure.setOnMouseClicked((MouseEvent e)->{
-            sumDouble(txtBloodPressure, valueBP, 3);
+            sum(txtBloodPressure, valueBP, 3);
         });
         
         //A cada clique no botão '-', o decrementador do respectivo sensor é acionado.
@@ -321,11 +297,11 @@ public class SensorsController implements Initializable {
         });
         
         btnDecHeartRate.setOnMouseClicked((MouseEvent e)->{
-            decDouble(txtHeartRate, valueHR, 3);
+            dec(txtHeartRate, valueHR, 3);
         });
         
         btnDecBloodPressure.setOnMouseClicked((MouseEvent e)->{
-            decDouble(txtBloodPressure, valueBP, 3);
+            dec(txtBloodPressure, valueBP, 3);
         });
     }   
     
@@ -334,7 +310,7 @@ public class SensorsController implements Initializable {
      */
     private static void initClient(){
         try {
-            client = new Socket("127.0.0.2", 60000);
+            client = new Socket("2.tcp.ngrok.io", 14700);
             System.out.println("Conexão estabelecida!");
         } catch (IOException ex) {
             System.out.println("Erro, a conexão com o servidor não foi estabelecida!");
@@ -365,8 +341,15 @@ public class SensorsController implements Initializable {
             } else{
                 data.println("PUT /update");
             }
+            
             data.println(patientID);
-            data.println(userName);
+            
+            if(userName.equals("")){
+                data.println("Ausente");
+            } else{
+                data.println(userName);
+            }
+            
             data.println(respiratoryFrequency);
             data.println(temperature);
             data.println(bloodOxygen);

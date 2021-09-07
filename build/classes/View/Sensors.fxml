@@ -20,12 +20,6 @@
             <Font size="16.0" />
          </font>
       </Label>
-      <Label fx:id="lblInfo" layoutX="72.0" layoutY="131.0" prefHeight="17.0" prefWidth="255.0" textAlignment="CENTER" textFill="#8a8686" />
-      <Label fx:id="lblUserName" layoutX="42.0" layoutY="96.0" prefHeight="25.0" prefWidth="314.0">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </Label>
       <TextField fx:id="txtUserName" layoutX="42.0" layoutY="98.0" prefHeight="25.0" prefWidth="314.0">
          <font>
             <Font size="14.0" />
