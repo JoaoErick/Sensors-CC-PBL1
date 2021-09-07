@@ -14,21 +14,40 @@ import java.util.ResourceBundle;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
 /**
- *
+ * Classe controladora responsável por executar funções dispararadas por ações 
+ * realizadas na janela da aplicação do emulador de sensores.
+ * 
  * @author João Erick Barbosa
  */
 public class SensorsController implements Initializable {
+    /**
+     * Texto informativo na janela.
+     */
+    @FXML
+    private Label lblInfo;
+    /**
+     * Componentes do nome do paciente.
+     */
+    @FXML
+    private TextField txtUserName;
+    
+    @FXML
+    private Label lblUserName;
     
     /**
      * Componentes do sensor de frequência respiratória.
@@ -91,12 +110,6 @@ public class SensorsController implements Initializable {
     private Button btnDecBloodPressure;
     
     /**
-     * Botão que envia os dados dos sensores para o servidor.
-     */
-    @FXML
-    private Button btnSendData;
-    
-    /**
      * Valores de cada sensor inicializados com resultados arbitrários.
      */
     private int valueRF = 11;
@@ -121,6 +134,9 @@ public class SensorsController implements Initializable {
      */
     private static String patientID = UUID.randomUUID().toString().substring(9, 13);
     
+    /**
+     * Recebe a mensagem do servidor.
+     */
     private static String response;
     
     @Override
@@ -128,23 +144,66 @@ public class SensorsController implements Initializable {
         //Faz a conexão do cliente com o servidor.
         initClient();
         
-        //Ao pressionar o botão, a função que envia os dados ao servidor é acionada.
-        btnSendData.setOnMouseClicked((MouseEvent e)->{
-            
-            try {
-                if(sendMessage(txtRespiratoryFrequency.getText(), txtTemperature.getText(), txtBloodOxygen.getText(), txtHeartRate.getText(), txtBloodPressure.getText())){
-                    System.out.println("Mensagem enviada com sucesso!");
-                    if(!response.equals(" "))
-                        System.out.println("Resposta do servidor: " + response);
+        lblInfo.setText("Escreva o nome do paciente e pressione ENTER");
+        
+        
+        /**
+         * Quando o nome do paciente for digita e o for pressionada a 
+         * tecla ENTER, uma thread é instanciada e ela passa a acionar 
+         * a função que envia os dados ao servidor a cada 5 segundos.
+         * 
+         */
+        txtUserName.setOnKeyPressed((KeyEvent e) -> {
+            if (e.getCode() == KeyCode.ENTER) {
+                txtUserName.setVisible(false);
+                lblUserName.setText(txtUserName.getText());
+                lblInfo.setText("");
+                /**
+                 * Uma nova thread é inicializada concorrentemente ao sistema
+                 * para fazer requisições ao servidor.
+                 *
+                 */
+                Thread thread = new Thread(new Runnable() {
 
-                } else{
-                    System.out.println("Erro, falha ao enviar a mensagem!");
-                }
+                    @Override
+                    public void run() {
+                        Runnable updater = new Runnable() {
 
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(SensorsController.class.getName()).log(Level.SEVERE, null, ex);
+                            @Override
+                            public void run() {
+                                try {
+                                    if (!txtUserName.getText().equals("")) {
+                                        if (sendMessage(txtUserName.getText(), txtRespiratoryFrequency.getText(), txtTemperature.getText(), txtBloodOxygen.getText(), txtHeartRate.getText(), txtBloodPressure.getText())) {
+                                            if (response.equals("200 OK")) {
+                                                System.out.println("Mensagem enviada com sucesso!");
+                                            }
+                                        } else {
+                                            System.out.println("Erro, falha ao enviar a mensagem!");
+                                        }
+                                    }
+                                } catch (ClassNotFoundException ex) {
+                                    Logger.getLogger(SensorsController.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                        };
+
+                        while (true) {
+                            try {
+                                Thread.sleep(5000);
+                            } catch (InterruptedException ex) {
+                            }
+
+                            // A atualização é feita na thread da aplicação.
+                            Platform.runLater(updater);
+                        }
+                    }
+
+                });
+                // Impede a thread de finalizar a JVM
+                thread.setDaemon(true);
+                thread.start();
+                
             }
-            
         });
         
         //Inicializando os campos de texto dos sensores com valores arbitrários.
@@ -154,8 +213,7 @@ public class SensorsController implements Initializable {
         txtHeartRate.setText(Integer.toString(valueHR));
         txtBloodPressure.setText(Integer.toString(valueBP));
         
-        //--------------
-        
+        //Limitando os tipos de caracteres que podem ser digitados nos campos de texto.
         txtRespiratoryFrequency.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, 
@@ -288,31 +346,29 @@ public class SensorsController implements Initializable {
      * @param bloodOxygen
      * @param heartRate
      * @param bloodPressure
-     * @return
+     * @return boolean
      * @throws ClassNotFoundException 
      */
-    private static boolean sendMessage(String respiratoryFrequency, String temperature, String bloodOxygen, String heartRate, String bloodPressure) throws ClassNotFoundException{
+    private static boolean sendMessage(String userName, String respiratoryFrequency, String temperature, String bloodOxygen, String heartRate, String bloodPressure) throws ClassNotFoundException{
         try {
             PrintStream data = new PrintStream(client.getOutputStream());
             if(flag == 0){
-                data.println("POST");
+                data.println("POST /create");
                 flag++;
             } else{
-                data.println("PUT");
+                data.println("PUT /update");
             }
             data.println(patientID);
-            data.println("Fulano");
+            data.println(userName);
             data.println(respiratoryFrequency);
             data.println(temperature);
             data.println(bloodOxygen);
             data.println(heartRate);
             data.println(bloodPressure);
             
-            ObjectInputStream entrada = new ObjectInputStream(client.getInputStream());
-            String text = (String)entrada.readObject();
-            System.out.println("Resposta do servidor: " + text);
-            
-            response = text;
+            ObjectInputStream input = new ObjectInputStream(client.getInputStream());
+            response = (String)input.readObject();
+            System.out.println("Resposta do servidor: " + response);
             
             return true;
         } catch (IOException ex) {
@@ -411,7 +467,7 @@ public class SensorsController implements Initializable {
             value = Double.parseDouble(txt.getText());
             value -= 0.10;
             txt.setText(Double.toString(value));
-                verifyTextLegth(txt, limit);
+            verifyTextLegth(txt, limit);
         }
     }
     
