@@ -5,8 +5,10 @@
  */
 package Controller;
 
+import Model.Patient;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintStream;
 import java.net.Socket;
 import java.net.URL;
@@ -310,7 +312,7 @@ public class SensorsController implements Initializable {
      */
     private static void initClient(){
         try {
-            client = new Socket("2.tcp.ngrok.io", 14700);
+            client = new Socket("localhost", 60000);
             System.out.println("Conexão estabelecida!");
         } catch (IOException ex) {
             System.out.println("Erro, a conexão com o servidor não foi estabelecida!");
@@ -334,27 +336,24 @@ public class SensorsController implements Initializable {
      */
     private static boolean sendMessage(String userName, String respiratoryFrequency, String temperature, String bloodOxygen, String heartRate, String bloodPressure) throws ClassNotFoundException{
         try {
-            PrintStream data = new PrintStream(client.getOutputStream());
+            
+            ObjectOutputStream output = new ObjectOutputStream(client.getOutputStream());
+            output.flush();
+            
             if(flag == 0){
-                data.println("POST /create");
+                output.writeObject(new String("POST /create"));
                 flag++;
             } else{
-                data.println("PUT /update");
+                output.writeObject(new String("PUT /update"));
             }
-            
-            data.println(patientID);
             
             if(userName.equals("")){
-                data.println("Ausente");
-            } else{
-                data.println(userName);
+                userName = "Ausente";
             }
             
-            data.println(respiratoryFrequency);
-            data.println(temperature);
-            data.println(bloodOxygen);
-            data.println(heartRate);
-            data.println(bloodPressure);
+            Patient patient = new Patient(patientID, userName, respiratoryFrequency, temperature, bloodOxygen, heartRate, bloodPressure);
+            output.flush();
+            output.writeObject(patient);
             
             ObjectInputStream input = new ObjectInputStream(client.getInputStream());
             response = (String)input.readObject();
