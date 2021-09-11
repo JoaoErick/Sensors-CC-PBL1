@@ -2,7 +2,7 @@
 
 <h3 align="center">Interface</h3>
 <p align="center">
-  <img src="https://i.imgur.com/irNktJ8.png" width="70%">
+  <img src="https://i.imgur.com/jJcXQQj.png" width="70%">
 </p>
 
 ------------
