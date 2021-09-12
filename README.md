@@ -17,6 +17,16 @@ Aplicação desktop destinada a resolução do Problema 1 da disciplina MI - Con
 
 ------------
 
+## Manual do Sistema ##
+É recomendado que o manual de sistema do [Servidor Socket](https://github.com/JoaoErick/Server-CC-PBL1#readme) já tenha sido seguido antes de dar continuidade a este manual.
+
+1. Faça o download do arquivo executável ``.exe`` ou do arquivo ``.jar`` presente na seção de releases do repositório.
+2. Caso o arquivo que foi foi feito o download tenha sido ``.exe``, faça a instalação do mesmo.
+3. Caso o arquivo que foi foi feito o download tenha sido ``.jar``, execute o arquivo.
+4. A aplicação será iniciada logo em seguida.
+
+------------
+
 ## 📌 Autor ##
 - João Erick: [Github](https://github.com/JoaoErick) - [Linkedin](https://www.linkedin.com/in/joão-erick-barbosa-9050801b0/) - [E-mail](https://mail.google.com/mail/u/0/?view=cm&fs=1&tf=1&source=mailto&to=jsilva@ecomp.uefs.br)
 ------------
