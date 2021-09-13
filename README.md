@@ -2,7 +2,7 @@
 
 <h3 align="center">Interface</h3>
 <p align="center">
-  <img src="https://i.imgur.com/irNktJ8.png" width="70%">
+  <img src="https://i.imgur.com/jJcXQQj.png" width="70%">
 </p>
 
 ------------
@@ -14,6 +14,16 @@ Aplicação desktop destinada a resolução do Problema 1 da disciplina MI - Con
 - [Java](https://www.java.com/pt-BR/)
 - [JavaFX](https://www.oracle.com/br/java/technologies/javase/javafx-overview.html)
 - [SceneBuilder](https://www.oracle.com/java/technologies/javase/javafxscenebuilder-info.html)
+
+------------
+
+## Manual do Sistema ##
+É recomendado que o manual de sistema do [Servidor Socket](https://github.com/JoaoErick/Server-CC-PBL1#readme) já tenha sido seguido antes de dar continuidade a este manual.
+
+1. Faça o download do arquivo executável ``.exe`` ou do arquivo ``.jar`` presente na seção de releases do repositório.
+2. Caso o arquivo que foi foi feito o download tenha sido ``.exe``, faça a instalação do mesmo.
+3. Caso o arquivo que foi foi feito o download tenha sido ``.jar``, execute o arquivo.
+4. A aplicação será iniciada logo em seguida.
 
 ------------
 
