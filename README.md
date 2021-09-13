@@ -20,7 +20,7 @@ Aplicação desktop destinada a resolução do Problema 1 da disciplina MI - Con
 ## Manual do Sistema ##
 É recomendado que o manual de sistema do [Servidor Socket](https://github.com/JoaoErick/Server-CC-PBL1#readme) já tenha sido seguido antes de dar continuidade a este manual.
 
-1. Faça o download do arquivo executável ``.exe`` ou do arquivo ``.jar`` presente na seção de releases do repositório.
+1. Faça o download do arquivo executável ``.exe`` ou do arquivo ``.jar`` presente na seção de [Releases](https://github.com/JoaoErick/Sensors-CC-PBL1/releases/tag/v1.0) do repositório.
 2. Caso o arquivo que foi foi feito o download tenha sido ``.exe``, faça a instalação do mesmo.
 3. Caso o arquivo que foi foi feito o download tenha sido ``.jar``, execute o arquivo.
 4. A aplicação será iniciada logo em seguida.
