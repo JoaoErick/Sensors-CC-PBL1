@@ -21,6 +21,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -100,6 +101,12 @@ public class SensorsController implements Initializable {
     private Button btnDecBloodPressure;
     
     /**
+     * Componente que indica o status da conexão do cliente com o servidor.
+     */
+    @FXML
+    private Label lblStatus;
+    
+    /**
      * Valores de cada sensor inicializados com resultados arbitrários.
      */
     private int valueRF = 11;
@@ -117,22 +124,24 @@ public class SensorsController implements Initializable {
      * Permite que o método POST seja utilizado uma vez a cada instância dessa aplicação. 
      * Após esse o uso, os próximos envios de dados serão feitos pelo método PUT.
      */
-    private static int flag = 0;
+    private int flag = 0;
     
     /**
      * Gera o ID do paciente em um conjunto de 4 caracteres aleatórios.
      */
-    private static String patientID = UUID.randomUUID().toString().substring(9, 13);
+    private String patientID = UUID.randomUUID().toString().substring(9, 13);
     
     /**
      * Recebe a mensagem do servidor.
      */
-    private static String response;
+    private String response;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         //Faz a conexão do cliente com o servidor.
         initClient();
+        
+        lblStatus.setText("aguardando...");
         
         /**
          * Uma nova thread é inicializada concorrentemente ao sistema
@@ -148,9 +157,12 @@ public class SensorsController implements Initializable {
                     @Override
                     public void run() {
                         if(client != null){
+                            lblStatus.setText("Conectado");
+                            lblStatus.setStyle("-fx-text-fill: green");
+                            
                             try {
                                 if (sendMessage(txtUserName.getText(), txtRespiratoryFrequency.getText(), txtTemperature.getText(), txtBloodOxygen.getText(), txtHeartRate.getText(), txtBloodPressure.getText())) {
-                                    if (response.equals("200 OK")) {
+                                    if (response.equals("200 OK") || response.equals("201 Created")) {
                                         System.out.println("Mensagem enviada com sucesso!");
                                     }
                                 } else {
@@ -160,6 +172,8 @@ public class SensorsController implements Initializable {
                                 Logger.getLogger(SensorsController.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         }  else{
+                            lblStatus.setText("Sem conexão");
+                            lblStatus.setStyle("-fx-text-fill: red");
                             initClient();
                         }
                     }
@@ -329,7 +343,7 @@ public class SensorsController implements Initializable {
      * @return boolean
      * @throws ClassNotFoundException 
      */
-    private static boolean sendMessage(String userName, String respiratoryFrequency, String temperature, String bloodOxygen, String heartRate, String bloodPressure) throws ClassNotFoundException{
+    private boolean sendMessage(String userName, String respiratoryFrequency, String temperature, String bloodOxygen, String heartRate, String bloodPressure) throws ClassNotFoundException{
         try {
             
             ObjectOutputStream output = new ObjectOutputStream(client.getOutputStream());
@@ -357,6 +371,9 @@ public class SensorsController implements Initializable {
             return true;
         } catch (IOException ex) {
             System.out.println("Erro ao enviar a mensagem!");
+            lblStatus.setText("Sem conexão");
+            lblStatus.setStyle("-fx-text-fill: red");
+            client = null;
         }
         return false;
     }
