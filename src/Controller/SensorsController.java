@@ -138,10 +138,9 @@ public class SensorsController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        //Faz a conexão do cliente com o servidor.
-        initClient();
         
-        lblStatus.setText("aguardando...");
+        lblStatus.setText("Sem conexão");
+        lblStatus.setStyle("-fx-text-fill: red");
         
         /**
          * Uma nova thread é inicializada concorrentemente ao sistema
@@ -156,25 +155,17 @@ public class SensorsController implements Initializable {
 
                     @Override
                     public void run() {
-                        if(client != null){
-                            lblStatus.setText("Conectado");
-                            lblStatus.setStyle("-fx-text-fill: green");
-                            
-                            try {
-                                if (sendMessage(txtUserName.getText(), txtRespiratoryFrequency.getText(), txtTemperature.getText(), txtBloodOxygen.getText(), txtHeartRate.getText(), txtBloodPressure.getText())) {
-                                    if (response.equals("200 OK") || response.equals("201 Created")) {
-                                        System.out.println("Mensagem enviada com sucesso!");
-                                    }
-                                } else {
-                                    System.out.println("Erro, falha ao enviar a mensagem!");
+                        
+                        try {
+                            if (sendMessage(txtUserName.getText(), txtRespiratoryFrequency.getText(), txtTemperature.getText(), txtBloodOxygen.getText(), txtHeartRate.getText(), txtBloodPressure.getText())) {
+                                if (response.equals("200 OK") || response.equals("201 Created")) {
+                                    System.out.println("Mensagem enviada com sucesso!");
                                 }
-                            } catch (ClassNotFoundException ex) {
-                                Logger.getLogger(SensorsController.class.getName()).log(Level.SEVERE, null, ex);
+                            } else {
+                                System.out.println("Erro, falha ao enviar a mensagem!");
                             }
-                        }  else{
-                            lblStatus.setText("Sem conexão");
-                            lblStatus.setStyle("-fx-text-fill: red");
-                            initClient();
+                        } catch (ClassNotFoundException ex) {
+                            Logger.getLogger(SensorsController.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
                 };
@@ -319,12 +310,18 @@ public class SensorsController implements Initializable {
     /**
      * Método que inicializa um cliente socket fazendo a conexão com o servidor.
      */
-    private static void initClient(){
+    private void initClient(){
         try {
             client = new Socket("localhost", 60000);
             System.out.println("Conexão estabelecida!");
+            
+            lblStatus.setText("Conectado");
+            lblStatus.setStyle("-fx-text-fill: green");
         } catch (IOException ex) {
             System.out.println("Erro, a conexão com o servidor não foi estabelecida!");
+            
+            lblStatus.setText("Sem conexão");
+            lblStatus.setStyle("-fx-text-fill: red");
             try {
                 client.close();
             }
@@ -345,6 +342,9 @@ public class SensorsController implements Initializable {
      */
     private boolean sendMessage(String userName, String respiratoryFrequency, String temperature, String bloodOxygen, String heartRate, String bloodPressure) throws ClassNotFoundException{
         try {
+            
+            //Faz a conexão do cliente com o servidor.
+            initClient();
             
             ObjectOutputStream output = new ObjectOutputStream(client.getOutputStream());
             output.flush();
@@ -367,12 +367,11 @@ public class SensorsController implements Initializable {
             ObjectInputStream input = new ObjectInputStream(client.getInputStream());
             response = (String)input.readObject();
             System.out.println("Resposta do servidor: " + response);
+            client.close();
             
             return true;
         } catch (IOException ex) {
             System.out.println("Erro ao enviar a mensagem!");
-            lblStatus.setText("Sem conexão");
-            lblStatus.setStyle("-fx-text-fill: red");
             client = null;
         }
         return false;
